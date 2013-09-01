@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Food Points!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 60px;
+      }
+      /* Custom container */
+      .container {
+        margin: 0 auto;
+        max-width: 1000px;
+      }
+
+    </style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+ <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a href="." class="brand">Food Points!</a>
+                </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+<div class="hero-unit">
+  <p class="lead">
+What plan are you on? (Default 1934, Plan A for 2013-14)
+</p>
+<input type="text" id="plan" value="1934">
+</input>
+</p>
+YOU SHOULD HAVE ABOUT THIS MANY FOOD POINTS:
+
+<div id="result" class="lead">
+</div>
+<a target="_blank" href="https://dco3.auxserv.duke.edu/onlineoffice">Check your current food points here</a>
+</div> <!-- hero unit -->
+
+      <p>
+        <a class="btn btn-success" href="https://github.com/howardc93/foodpoints">Get the source on Github</a>
+      </p>
+Howard Chung 2013
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+
+<script>
+//TODO save preference in cookie
+//TODO custom dates start/end?
+
+var start;
+var end;
+var currdate=new Date();
+//var currdate=new Date("9/1/2013"); //debug date
+var numfoodpoints=parseInt($("#plan").val());
+
+$("#plan").on("change", function(){
+numfoodpoints=parseInt($("#plan").val());
+});
+
+$(document).ready(function() {
+
+var fallstart=getNthDay(3, 1, 7, currdate.getFullYear()); //fourth monday august
+var fallend=getNthDay(2, 0, 11, currdate.getFullYear()); //third sunday december
+var springstart=getNthDay(1, 3, 0, currdate.getFullYear()); //second wednesday january
+var springend=getNthDay(0, 6, 4, currdate.getFullYear()); //first saturday may
+
+//if between, set to these
+if (currdate>fallstart && currdate<fallend){
+start=fallstart;
+end=fallend;
+setInterval(calculatePercentSemester, 50);
+}
+
+//if between, set to these
+else if (currdate>springstart && currdate<springend){
+  start=springstart;
+  end=springend;
+  setInterval(calculatePercentSemester, 50);
+}
+
+//else not in session
+else {
+  $("#result").html("Not currently in semester");
+}
+
+console.log(start);
+console.log(end);
+console.log(currdate);
+console.log(numfoodpoints);
+
+//calculates and updates the percentage of the semester elapsed
+function calculatePercentSemester(){
+  $("#result").html(numfoodpoints*(1-(new Date()-start)/(end-start)));
+}
+
+     });
+
+//gets the nth (zero-indexed) instance of a specific day of the week in a month, year
+function getNthDay(n, dayOfWeek, month, year){
+  var myDate = new Date();
+myDate.setHours(0, 0, 0, 0);
+myDate.setYear(year);
+// get first day of month
+myDate.setDate(1);
+myDate.setMonth(month);
+
+// Find day of week.
+while(myDate.getDay() != dayOfWeek) {
+    myDate.setDate(myDate.getDate() + 1);
+}
+
+// Add 7*n days (n weeks)
+myDate.setDate(myDate.getDate() + 7*n);
+return myDate;
+}
+</script>
+  </body>
+</html>
